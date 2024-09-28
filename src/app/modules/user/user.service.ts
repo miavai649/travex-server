@@ -1,12 +1,12 @@
-import { TUser } from './user.interface'
-import { User } from './user.model'
+import { TUser } from "./user.interface";
+import { User } from "./user.model";
 
 const userRegisterIntoDb = async (payload: TUser) => {
-  const user = await User.create(payload)
+  const user = await User.create(payload);
 
-  return user
-}
+  return user;
+};
 
 export const UserServices = {
-  userRegisterIntoDb
-}
+  userRegisterIntoDb,
+};
