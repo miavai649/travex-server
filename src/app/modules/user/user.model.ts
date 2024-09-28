@@ -1,84 +1,85 @@
-import { Schema, model, Types } from "mongoose";
-import { TUser } from "./user.interface";
-import { GENDER } from "./user.constant";
-import bcryptjs from "bcryptjs";
-import config from "../../config";
+import { Schema, model, Types } from 'mongoose'
+import { TUser } from './user.interface'
+import { GENDER } from './user.constant'
+import bcryptjs from 'bcryptjs'
+import config from '../../config'
 
 const userSchema = new Schema<TUser>(
   {
     name: {
       type: String,
       required: true,
-      trim: true,
+      trim: true
     },
     email: {
       type: String,
       required: true,
-      unique: true,
+      unique: true
     },
     password: {
       type: String,
-      required: true,
+      required: true
     },
     gender: {
       type: String,
       enum: Object.keys(GENDER),
-      required: true,
+      required: true
     },
     profileImage: {
       type: String,
-      default: "https://i.ibb.co.com/vkVW6s0/download.png",
+      default: 'https://i.ibb.co.com/vkVW6s0/download.png'
     },
     bio: {
-      type: String,
+      type: String
     },
     birthDate: {
       type: String,
-      required: true,
+      required: true
     },
     mobileNumber: {
       type: String,
-      required: true,
+      required: true
     },
     address: {
       type: String,
-      required: true,
+      required: true
     },
     isVerified: {
       type: Boolean,
-      default: false,
+      default: false
     },
     followers: [
       {
         type: Types.ObjectId,
-        ref: "User",
-      },
+        ref: 'User'
+      }
     ],
     following: [
       {
         type: Types.ObjectId,
-        ref: "User",
-      },
-    ],
+        ref: 'User'
+      }
+    ]
   },
-  { timestamps: true },
-);
+  { timestamps: true }
+)
 
-userSchema.pre("save", async function (next) {
-  const user = this;
+// hashing password before it save to our database
+userSchema.pre('save', async function (next) {
+  const user = this
 
   user.password = await bcryptjs.hash(
     user.password,
-    Number(config.bcrypt_salt_rounds),
-  );
+    Number(config.bcrypt_salt_rounds)
+  )
 
-  next();
-});
+  next()
+})
 
-// set '' after saving password
-userSchema.post("save", function (doc, next) {
-  doc.password = "";
-  next();
-});
+// after saving the user in the response we are sending empty string in the password field
+userSchema.post('save', function (doc, next) {
+  doc.password = ''
+  next()
+})
 
-export const User = model<TUser>("User", userSchema);
+export const User = model<TUser>('User', userSchema)
