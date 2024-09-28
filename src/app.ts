@@ -1,10 +1,10 @@
-import express, { Request, Response } from 'express'
-const app = express()
+import express, { Request, Response } from "express";
+const app = express();
 
-app.get('/', (req: Request, res: Response) => {
-  const a = 'Hello world'
+app.get("/", (req: Request, res: Response) => {
+  const a = "Hello world";
 
-  res.send(a)
-})
+  res.send(a);
+});
 
-export default app
+export default app;
