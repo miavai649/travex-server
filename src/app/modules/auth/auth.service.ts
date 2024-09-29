@@ -245,10 +245,65 @@ const resetPassword = async (
   return null;
 };
 
+const refreshToken = async (token: string) => {
+  // check if the token is valid or not
+  const decoded = verifyToken(
+    token,
+    config.refresh_secret as string,
+  ) as JwtPayload;
+
+  const { email, iat } = decoded;
+
+  // checking if the user is exist in the database
+  const user = await User.isUserExistsByEmail(email);
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User is not found!");
+  }
+
+  // checking if the user is blocked by admin
+  const userStatus = user?.status;
+
+  if (userStatus === "BLOCKED") {
+    throw new AppError(httpStatus.FORBIDDEN, "User is blocked!");
+  }
+
+  if (
+    user.passwordChangedAt &&
+    User.isJWTIssuedBeforePasswordChanged(user.passwordChangedAt, iat as number)
+  ) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized !");
+  }
+
+  // jwt payload for create access token
+  const jwtPayload = {
+    _id: user._id!,
+    name: user.name,
+    email: user.email,
+    mobileNumber: user.mobileNumber,
+    gender: user.gender,
+    role: user.role,
+    birthDate: user.birthDate,
+    status: user.status,
+  };
+
+  // create access token and send it to the client
+  const accessToken = createToken(
+    jwtPayload,
+    config.access_secret as string,
+    config.access_expires_in as string,
+  );
+
+  return {
+    accessToken,
+  };
+};
+
 export const AuthServices = {
   registerUser,
   loginUser,
   changePassword,
   forgetPassword,
   resetPassword,
+  refreshToken,
 };
