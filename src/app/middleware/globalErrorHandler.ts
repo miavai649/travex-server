@@ -2,13 +2,13 @@
 /* eslint-disable no-unused-vars */
 import { ErrorRequestHandler } from "express";
 import { ZodError } from "zod";
-import AppError from "../errors/AppError";
-import handleCastError from "../errors/handleCastError";
-import handleValidationError from "../errors/handleValidationError";
-import handleZodError from "../errors/handleZodError";
-import handleDuplicateError from "../errors/handlerDuplicateError";
+import AppError from "../../errors/AppError";
+import handleCastError from "../../errors/handleCastError";
+import handleValidationError from "../../errors/handleValidationError";
+import handleZodError from "../../errors/handleZodError";
+import handleDuplicateError from "../../errors/handlerDuplicateError";
 import { TErrorSources } from "../interfaces/error.interface";
-import config from "../../config";
+import config from "../config";
 // import { TImageFiles } from '../interfaces/image.interface'
 // import { deleteImageFromCloudinary } from '../utils/deleteImage'
 

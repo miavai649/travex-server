@@ -1,6 +1,6 @@
 import express from "express";
 import { UserControllers } from "./user.controller";
-import validateRequest from "../middleware/validateRequest";
+import validateRequest from "../../middleware/validateRequest";
 import { userRegisterSchema } from "./user.validation";
 
 const router = express.Router();

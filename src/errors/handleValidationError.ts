@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import {
   TErrorSources,
   TGenericErrorResponse,
-} from "../interfaces/error.interface";
+} from "../app/interfaces/error.interface";
 
 const handleValidationError = (
   err: mongoose.Error.ValidationError,
