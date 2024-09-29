@@ -56,3 +56,5 @@ const auth = (...requiredRoles: (keyof typeof USER_ROLE)[]) => {
     next();
   });
 };
+
+export default auth;

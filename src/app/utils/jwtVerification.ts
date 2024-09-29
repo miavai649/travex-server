@@ -29,7 +29,8 @@ export const verifyToken = (
   secret: string,
 ): JwtPayload | Error => {
   try {
-    return jwt.verify(token, secret) as JwtPayload;
+    const decoded = jwt.verify(token, secret) as JwtPayload;
+    return decoded;
   } catch (error: any) {
     throw new AppError(401, "You are not authorized!");
   }

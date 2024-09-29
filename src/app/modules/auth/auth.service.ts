@@ -5,13 +5,15 @@ import { TLoginUser, TRegisterUser } from "./auth.interface";
 import { USER_ROLE } from "../user/user.constant";
 import { createToken } from "../../utils/jwtVerification";
 import config from "../../config";
+import { JwtPayload } from "jsonwebtoken";
+import bcryptjs from "bcryptjs";
 
 const registerUser = async (payload: TRegisterUser) => {
   // checking if the user is exist
   const user = await User.isUserExistsByEmail(payload?.email);
 
   if (user) {
-    throw new AppError(httpStatus.NOT_FOUND, "This user is already exist!");
+    throw new AppError(httpStatus.NOT_FOUND, "User is already exist!");
   }
 
   payload.role = USER_ROLE.USER;
@@ -56,7 +58,7 @@ const loginUser = async (payload: TLoginUser) => {
   const user = await User.isUserExistsByEmail(payload?.email);
 
   if (!user) {
-    throw new AppError(httpStatus.NOT_FOUND, "This user is not found!");
+    throw new AppError(httpStatus.NOT_FOUND, "User is not found!");
   }
 
   // checking if the user is blocked by the admin
@@ -64,7 +66,7 @@ const loginUser = async (payload: TLoginUser) => {
   const userStatus = user?.status;
 
   if (userStatus === "BLOCKED") {
-    throw new AppError(httpStatus.FORBIDDEN, "This user is blocked!");
+    throw new AppError(httpStatus.FORBIDDEN, "User is blocked!");
   }
 
   //checking if the password is correct
@@ -104,7 +106,50 @@ const loginUser = async (payload: TLoginUser) => {
   };
 };
 
+const changePassword = async (
+  userData: JwtPayload,
+  payload: { oldPassword: string; newPassword: string },
+) => {
+  // checking if the user is exist in the database
+  const user = await User.isUserExistsByEmail(userData.email);
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User is not found!");
+  }
+
+  // checking if the user is blocked by the admin
+  const userStatus = user?.status;
+
+  if (userStatus === "BLOCKED") {
+    throw new AppError(httpStatus.FORBIDDEN, "This user is blocked!");
+  }
+
+  //checking if the given password is correct
+  if (!(await User.isPasswordMatched(payload.oldPassword, user?.password)))
+    throw new AppError(httpStatus.FORBIDDEN, "Password do not matched");
+
+  //hash new password
+  const newHashedPassword = await bcryptjs.hash(
+    payload.newPassword,
+    Number(config.bcrypt_salt_rounds),
+  );
+
+  await User.findOneAndUpdate(
+    {
+      email: userData.email,
+      role: userData.role,
+    },
+    {
+      password: newHashedPassword,
+      passwordChangedAt: new Date(),
+    },
+  );
+
+  return null;
+};
+
 export const AuthServices = {
   registerUser,
   loginUser,
+  changePassword,
 };
