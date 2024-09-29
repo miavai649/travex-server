@@ -3,7 +3,7 @@ import { UserSearchableFields } from "./user.constant";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
 
-const userRegisterIntoDb = async (payload: TUser) => {
+const createUserIntoDb = async (payload: TUser) => {
   const user = await User.create(payload);
 
   return user;
@@ -23,6 +23,6 @@ const getAllUsersFromDb = async (query: Record<string, unknown>) => {
 };
 
 export const UserServices = {
-  userRegisterIntoDb,
+  createUserIntoDb,
   getAllUsersFromDb,
 };

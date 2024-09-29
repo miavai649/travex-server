@@ -8,7 +8,7 @@ const router = express.Router();
 router.post(
   "/register-user",
   validateRequest(userRegisterSchema),
-  UserControllers.userRegister,
+  UserControllers.createUser,
 );
 router.get("/", UserControllers.getAllUsers);
 

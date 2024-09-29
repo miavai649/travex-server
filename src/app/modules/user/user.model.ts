@@ -1,6 +1,6 @@
 import { Schema, model, Types } from "mongoose";
 import { TUser } from "./user.interface";
-import { GENDER } from "./user.constant";
+import { GENDER, USER_ROLE } from "./user.constant";
 import bcryptjs from "bcryptjs";
 import config from "../../config";
 
@@ -25,12 +25,18 @@ const userSchema = new Schema<TUser>(
       enum: Object.keys(GENDER),
       required: true,
     },
+    role: {
+      type: String,
+      enum: Object.keys(USER_ROLE),
+      default: USER_ROLE.USER,
+    },
     profileImage: {
       type: String,
       default: "https://i.ibb.co.com/vkVW6s0/download.png",
     },
     bio: {
       type: String,
+      default: null,
     },
     birthDate: {
       type: String,
@@ -42,7 +48,7 @@ const userSchema = new Schema<TUser>(
     },
     address: {
       type: String,
-      required: true,
+      default: null,
     },
     isVerified: {
       type: Boolean,

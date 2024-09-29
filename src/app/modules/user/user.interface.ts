@@ -1,17 +1,18 @@
 import { ObjectId } from "mongoose";
-import { GENDER } from "./user.constant";
+import { GENDER, USER_ROLE } from "./user.constant";
 
 export type TUser = {
   name: string;
   email: string;
   password: string;
-  gender: keyof typeof GENDER;
-  profileImage: string;
-  bio: string;
-  birthDate: string;
   mobileNumber: string;
-  address: string;
+  gender: keyof typeof GENDER;
+  role: keyof typeof USER_ROLE;
+  profileImage: string;
   isVerified: boolean;
-  followers: ObjectId[];
-  following: ObjectId[];
+  birthDate: string;
+  bio?: string;
+  address?: string;
+  followers?: ObjectId[];
+  following?: ObjectId[];
 };
