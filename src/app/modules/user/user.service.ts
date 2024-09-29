@@ -22,7 +22,13 @@ const getAllUsersFromDb = async (query: Record<string, unknown>) => {
   return result;
 };
 
+const getCurrentUser = async (userEmail: string, userRole: string) => {
+  const result = await User.findOne({ email: userEmail, role: userRole });
+  return result;
+};
+
 export const UserServices = {
   createUserIntoDb,
   getAllUsersFromDb,
+  getCurrentUser,
 };

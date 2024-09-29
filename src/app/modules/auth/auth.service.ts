@@ -299,11 +299,6 @@ const refreshToken = async (token: string) => {
   };
 };
 
-const getCurrentUser = async (userEmail: string, userRole: string) => {
-  const result = await User.findOne({ email: userEmail, role: userRole });
-  return result;
-};
-
 export const AuthServices = {
   registerUser,
   loginUser,
@@ -311,5 +306,4 @@ export const AuthServices = {
   forgetPassword,
   resetPassword,
   refreshToken,
-  getCurrentUser,
 };

@@ -25,7 +25,21 @@ const getAllUsers = catchAsync(async (req, res) => {
   });
 });
 
+const getCurrentUser = catchAsync(async (req, res) => {
+  const { email, role } = req.user;
+
+  const result = await UserServices.getCurrentUser(email, role);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Current user retrieved successfully!",
+    data: result,
+  });
+});
+
 export const UserControllers = {
   createUser,
   getAllUsers,
+  getCurrentUser,
 };

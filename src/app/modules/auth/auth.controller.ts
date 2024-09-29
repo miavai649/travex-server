@@ -93,19 +93,6 @@ const refreshToken = catchAsync(async (req, res) => {
   });
 });
 
-const getCurrentUser = catchAsync(async (req, res) => {
-  const { email, role } = req.user;
-
-  const result = await AuthServices.getCurrentUser(email, role);
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Current user retrieved successfully!",
-    data: result,
-  });
-});
-
 export const AuthControllers = {
   registerUser,
   loginUser,
@@ -113,5 +100,4 @@ export const AuthControllers = {
   forgetPassword,
   resetPassword,
   refreshToken,
-  getCurrentUser,
 };
