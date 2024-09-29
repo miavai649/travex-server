@@ -1,5 +1,5 @@
 import httpStatus from "http-status";
-import AppError from "../../../errors/AppError";
+import AppError from "../../errors/AppError";
 import { User } from "../user/user.model";
 import { TLoginUser, TRegisterUser } from "./auth.interface";
 import { USER_ROLE } from "../user/user.constant";
