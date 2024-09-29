@@ -1,7 +1,8 @@
 import { Model, ObjectId } from "mongoose";
-import { GENDER, USER_ROLE } from "./user.constant";
+import { GENDER, USER_ROLE, USER_STATUS } from "./user.constant";
 
 export type TUser = {
+  _id?: string;
   name: string;
   email: string;
   password: string;
@@ -10,6 +11,7 @@ export type TUser = {
   role: keyof typeof USER_ROLE;
   profileImage: string;
   passwordChangedAt?: Date;
+  status: keyof typeof USER_STATUS;
   isVerified: boolean;
   birthDate: string;
   bio?: string;

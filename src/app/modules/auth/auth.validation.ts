@@ -13,6 +13,15 @@ const userRegisterValidationSchema = z.object({
     mobileNumber: z.string().min(10, { message: "Mobile number is required" }),
   }),
 });
+
+const userLoginValidationSchema = z.object({
+  body: z.object({
+    email: z.string().email({ message: "Invalid email address" }),
+    password: z.string({ required_error: "Password is required" }),
+  }),
+});
+
 export const AuthValidation = {
   userRegisterValidationSchema,
+  userLoginValidationSchema,
 };

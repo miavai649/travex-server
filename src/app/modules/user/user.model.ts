@@ -1,6 +1,6 @@
 import { Schema, model, Types } from "mongoose";
 import { IUserModel, TUser } from "./user.interface";
-import { GENDER, USER_ROLE } from "./user.constant";
+import { GENDER, USER_ROLE, USER_STATUS } from "./user.constant";
 import bcryptjs from "bcryptjs";
 import config from "../../config";
 
@@ -41,6 +41,11 @@ const userSchema = new Schema<TUser, IUserModel>(
     birthDate: {
       type: String,
       required: true,
+    },
+    status: {
+      type: String,
+      enum: Object.keys(USER_STATUS),
+      default: USER_STATUS.ACTIVE,
     },
     passwordChangedAt: {
       type: Date,
