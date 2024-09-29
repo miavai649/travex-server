@@ -1,5 +1,5 @@
-import dotenv from "dotenv";
-dotenv.config();
+import dotenv from 'dotenv'
+dotenv.config()
 
 export default {
   port: process.env.PORT,
@@ -10,4 +10,5 @@ export default {
   access_expires_in: process.env.ACCESS_TOKEN_EXPIRES_IN,
   refresh_secret: process.env.REFRESH_TOKEN,
   refresh_expires_in: process.env.REFRESH_TOKEN_EXPIRES_IN,
-};
+  reset_pass_ui_link: process.env.RESET_PASSWORD_UI_LINK
+}
