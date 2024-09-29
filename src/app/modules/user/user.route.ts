@@ -10,5 +10,6 @@ router.post(
   validateRequest(userRegisterSchema),
   UserControllers.userRegister,
 );
+router.get("/", UserControllers.getAllUsers);
 
 export const UserRoutes = router;
