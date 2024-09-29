@@ -1,26 +1,26 @@
-import httpStatus from 'http-status'
-import AppError from '../../errors/AppError'
-import { User } from '../user/user.model'
-import { TLoginUser, TRegisterUser } from './auth.interface'
-import { USER_ROLE } from '../user/user.constant'
-import { createToken } from '../../utils/jwtVerification'
-import config from '../../config'
-import { JwtPayload } from 'jsonwebtoken'
-import bcryptjs from 'bcryptjs'
-import { sendEmail } from '../../utils/sendEmail'
+import httpStatus from "http-status";
+import AppError from "../../errors/AppError";
+import { User } from "../user/user.model";
+import { TLoginUser, TRegisterUser } from "./auth.interface";
+import { USER_ROLE } from "../user/user.constant";
+import { createToken, verifyToken } from "../../utils/jwtVerification";
+import config from "../../config";
+import { JwtPayload } from "jsonwebtoken";
+import bcryptjs from "bcryptjs";
+import { sendEmail } from "../../utils/sendEmail";
 
 const registerUser = async (payload: TRegisterUser) => {
   // checking if the user is exist
-  const user = await User.isUserExistsByEmail(payload?.email)
+  const user = await User.isUserExistsByEmail(payload?.email);
 
   if (user) {
-    throw new AppError(httpStatus.NOT_FOUND, 'User is already exist!')
+    throw new AppError(httpStatus.NOT_FOUND, "User is already exist!");
   }
 
-  payload.role = USER_ROLE.USER
+  payload.role = USER_ROLE.USER;
 
   //create new user
-  const newUser = await User.create(payload)
+  const newUser = await User.create(payload);
 
   // jwt payload for create access and refresh token
   const jwtPayload = {
@@ -31,49 +31,49 @@ const registerUser = async (payload: TRegisterUser) => {
     gender: newUser.gender,
     role: newUser.role,
     birthDate: newUser.birthDate,
-    status: newUser.status
-  }
+    status: newUser.status,
+  };
 
   // create access token and send it to the client
   const accessToken = createToken(
     jwtPayload,
     config.access_secret as string,
-    config.access_expires_in as string
-  )
+    config.access_expires_in as string,
+  );
 
   // create refresh token and send it to the client
   const refreshToken = createToken(
     jwtPayload,
     config.refresh_secret as string,
-    config.refresh_expires_in as string
-  )
+    config.refresh_expires_in as string,
+  );
 
   return {
     accessToken,
-    refreshToken
-  }
-}
+    refreshToken,
+  };
+};
 
 const loginUser = async (payload: TLoginUser) => {
   // checking if the user is exist in our data base
-  const user = await User.isUserExistsByEmail(payload?.email)
+  const user = await User.isUserExistsByEmail(payload?.email);
 
   if (!user) {
-    throw new AppError(httpStatus.NOT_FOUND, 'User is not found!')
+    throw new AppError(httpStatus.NOT_FOUND, "User is not found!");
   }
 
   // checking if the user is blocked by the admin
 
-  const userStatus = user?.status
+  const userStatus = user?.status;
 
-  if (userStatus === 'BLOCKED') {
-    throw new AppError(httpStatus.FORBIDDEN, 'User is blocked!')
+  if (userStatus === "BLOCKED") {
+    throw new AppError(httpStatus.FORBIDDEN, "User is blocked!");
   }
 
   //checking if the password is correct
 
   if (!(await User.isPasswordMatched(payload?.password, user?.password)))
-    throw new AppError(httpStatus.FORBIDDEN, 'Password do not matched')
+    throw new AppError(httpStatus.FORBIDDEN, "Password do not matched");
 
   // jwt payload for create access and refresh token
   const jwtPayload = {
@@ -84,84 +84,84 @@ const loginUser = async (payload: TLoginUser) => {
     gender: user.gender,
     role: user.role,
     birthDate: user.birthDate,
-    status: user.status
-  }
+    status: user.status,
+  };
 
   // create access token and send it to the client
   const accessToken = createToken(
     jwtPayload,
     config.access_secret as string,
-    config.access_expires_in as string
-  )
+    config.access_expires_in as string,
+  );
 
   // create refresh token and send it to the client
   const refreshToken = createToken(
     jwtPayload,
     config.refresh_secret as string,
-    config.refresh_expires_in as string
-  )
+    config.refresh_expires_in as string,
+  );
 
   return {
     accessToken,
-    refreshToken
-  }
-}
+    refreshToken,
+  };
+};
 
 const changePassword = async (
   userData: JwtPayload,
-  payload: { oldPassword: string; newPassword: string }
+  payload: { oldPassword: string; newPassword: string },
 ) => {
   // checking if the user is exist in the database
-  const user = await User.isUserExistsByEmail(userData.email)
+  const user = await User.isUserExistsByEmail(userData.email);
 
   if (!user) {
-    throw new AppError(httpStatus.NOT_FOUND, 'User is not found!')
+    throw new AppError(httpStatus.NOT_FOUND, "User is not found!");
   }
 
   // checking if the user is blocked by the admin
-  const userStatus = user?.status
+  const userStatus = user?.status;
 
-  if (userStatus === 'BLOCKED') {
-    throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked!')
+  if (userStatus === "BLOCKED") {
+    throw new AppError(httpStatus.FORBIDDEN, "This user is blocked!");
   }
 
   //checking if the given password is correct
   if (!(await User.isPasswordMatched(payload.oldPassword, user?.password)))
-    throw new AppError(httpStatus.FORBIDDEN, 'Password do not matched')
+    throw new AppError(httpStatus.FORBIDDEN, "Password do not matched");
 
   //hash new password
   const newHashedPassword = await bcryptjs.hash(
     payload.newPassword,
-    Number(config.bcrypt_salt_rounds)
-  )
+    Number(config.bcrypt_salt_rounds),
+  );
 
   await User.findOneAndUpdate(
     {
       email: userData.email,
-      role: userData.role
+      role: userData.role,
     },
     {
       password: newHashedPassword,
-      passwordChangedAt: new Date()
-    }
-  )
+      passwordChangedAt: new Date(),
+    },
+  );
 
-  return null
-}
+  return null;
+};
 
 const forgetPassword = async (email: string) => {
-  const user = await User.findOne({ email: email })
+  const user = await User.findOne({ email: email });
 
   // check if the user is exist
   if (!user) {
-    throw new AppError(httpStatus.NOT_FOUND, 'User not found')
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
   }
 
   // checking if the user is blocked by the admin
-  const userStatus = user?.status
+  const userStatus = user?.status;
 
-  if (userStatus === 'BLOCKED') {
-    throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked!')
+  if (userStatus === "BLOCKED") {
+    throw new AppError(httpStatus.FORBIDDEN, "This user is blocked!");
   }
 
   const jwtPayload = {
@@ -172,16 +172,16 @@ const forgetPassword = async (email: string) => {
     gender: user.gender,
     role: user.role,
     birthDate: user.birthDate,
-    status: user.status
-  }
+    status: user.status,
+  };
 
   const resetToken = createToken(
     jwtPayload,
     config.access_secret as string,
-    '10m'
-  )
+    "10m",
+  );
 
-  const resetUILink = `${config.reset_pass_ui_link}?id=${user?._id}&token=${resetToken}`
+  const resetUILink = `${config.reset_pass_ui_link}?id=${user?._id}&token=${resetToken}`;
 
   const emailHTML = `<div style="text-align: center; padding: 20px;">
       <h2>Password Reset</h2>
@@ -190,13 +190,65 @@ const forgetPassword = async (email: string) => {
         Reset Password
       </a>
       <p>This link will expire in 10 minutes.</p>
-    </div>`
+    </div>`;
 
-  sendEmail(user?.email as string, emailHTML)
-}
+  sendEmail(user?.email as string, emailHTML);
+};
+
+const resetPassword = async (
+  payload: {
+    email: string;
+    newPassword: string;
+  },
+  token: string,
+) => {
+  const user = await User.isUserExistsByEmail(payload?.email);
+
+  // check if the user is exist in the data base
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  // checking if the user is blocked by the admin
+  const userStatus = user?.status;
+
+  if (userStatus === "BLOCKED") {
+    throw new AppError(httpStatus.FORBIDDEN, "User is blocked!");
+  }
+
+  // check if the token is valid or not
+  const decoded = verifyToken(
+    token,
+    config.access_secret as string,
+  ) as JwtPayload;
+
+  if (decoded?.email !== payload?.email) {
+    throw new AppError(httpStatus.FORBIDDEN, "You are forbidden");
+  }
+
+  const newHashedPassword = await bcryptjs.hash(
+    payload?.newPassword,
+    Number(config.bcrypt_salt_rounds),
+  );
+
+  await User.findOneAndUpdate(
+    {
+      email: decoded?.email,
+      role: decoded?.role,
+    },
+    {
+      password: newHashedPassword,
+      passwordChangedAt: new Date(),
+    },
+  );
+
+  return null;
+};
+
 export const AuthServices = {
   registerUser,
   loginUser,
   changePassword,
-  forgetPassword
-}
+  forgetPassword,
+  resetPassword,
+};
