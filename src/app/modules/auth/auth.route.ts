@@ -38,4 +38,10 @@ router.post(
   AuthControllers.refreshToken,
 );
 
+router.get(
+  "/current-user",
+  auth(USER_ROLE.USER, USER_ROLE.ADMIN),
+  AuthControllers.getCurrentUser,
+);
+
 export const AuthRoutes = router;
