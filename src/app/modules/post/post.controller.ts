@@ -41,8 +41,26 @@ const getPostById = catchAsync(async (req, res) => {
   });
 });
 
+const updatePost = catchAsync(async (req, res) => {
+  const { id } = req.params;
+
+  const updatedItem = await PostServices.updatePostIntoDB(
+    id,
+    req.body,
+    req.files as TImageFiles,
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Post updated successfully",
+    data: updatedItem,
+  });
+});
+
 export const PostControllers = {
   createPost,
   getAllPosts,
   getPostById,
+  updatePost,
 };

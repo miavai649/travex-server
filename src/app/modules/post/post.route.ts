@@ -19,5 +19,13 @@ router.post(
 );
 router.get("/", PostControllers.getAllPosts);
 router.get("/:id", PostControllers.getPostById);
+router.put(
+  "/:id",
+  auth(USER_ROLE.USER),
+  multerUpload.fields([{ name: "postImages" }]),
+  bodyDataParsing,
+  validateRequest(PostValidations.updatePostValidationSchema),
+  PostControllers.updatePost,
+);
 
 export const PostRoutes = router;
