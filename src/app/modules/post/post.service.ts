@@ -1,4 +1,6 @@
+import httpStatus from "http-status";
 import { QueryBuilder } from "../../builder/QueryBuilder";
+import AppError from "../../errors/AppError";
 import { TImageFiles } from "../../interfaces/file.interface";
 import { PostsSearchableFields } from "./post.constant";
 import { TPost } from "./post.interface";
@@ -42,9 +44,26 @@ const updatePostIntoDB = async (
   return result;
 };
 
+const deletePostIntoDb = async (postId: string) => {
+  const isPostExists = await Post.findById(postId);
+
+  // check if the post is exist or not
+  if (!isPostExists) {
+    throw new AppError(httpStatus.NOT_FOUND, "Post not found");
+  }
+
+  const result = await Post.findByIdAndUpdate(
+    postId,
+    { isDelete: true },
+    { new: true },
+  );
+  return result;
+};
+
 export const PostServices = {
   createPostIntoDb,
   getAllPostsFromDb,
   getPostByFromDB,
   updatePostIntoDB,
+  deletePostIntoDb,
 };

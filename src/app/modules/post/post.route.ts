@@ -30,5 +30,6 @@ router.put(
   validateRequest(PostValidations.updatePostValidationSchema),
   PostControllers.updatePost,
 );
+router.delete("/:id", PostControllers.deletePost);
 
 export const PostRoutes = router;
