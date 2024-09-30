@@ -18,4 +18,6 @@ router.post(
   PostControllers.createPost,
 );
 
+router.get("/", PostControllers.getAllPosts);
+
 export const PostRoutes = router;
