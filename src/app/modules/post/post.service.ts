@@ -24,7 +24,13 @@ const getAllPostsFromDb = async (query: Record<string, unknown>) => {
   return result;
 };
 
+const getPostByFromDB = async (postId: string) => {
+  const result = await Post.findById(postId).populate("author");
+  return result;
+};
+
 export const PostServices = {
   createPostIntoDb,
   getAllPostsFromDb,
+  getPostByFromDB,
 };

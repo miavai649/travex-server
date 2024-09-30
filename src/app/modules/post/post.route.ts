@@ -17,7 +17,7 @@ router.post(
   validateRequest(PostValidations.createPostValidationSchema),
   PostControllers.createPost,
 );
-
 router.get("/", PostControllers.getAllPosts);
+router.get("/:id", PostControllers.getPostById);
 
 export const PostRoutes = router;
