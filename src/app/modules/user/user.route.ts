@@ -19,5 +19,10 @@ router.get(
   auth(USER_ROLE.USER, USER_ROLE.ADMIN),
   UserControllers.getCurrentUser,
 );
+router.put(
+  "/update-user/:id",
+  auth(USER_ROLE.USER),
+  UserControllers.updateUser,
+);
 
 export const UserRoutes = router;
