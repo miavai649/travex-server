@@ -14,7 +14,10 @@ const createPostIntoDb = async (payload: TPost, images: TImageFiles) => {
 };
 
 const getAllPostsFromDb = async (query: Record<string, unknown>) => {
-  const users = new QueryBuilder(Post.find().populate("author"), query)
+  const users = new QueryBuilder(
+    Post.find({ isDelete: false }).populate("author"),
+    query,
+  )
     .fields()
     .paginate()
     .sort()
