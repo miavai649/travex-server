@@ -14,6 +14,19 @@ const createComment = catchAsync(async (req, res) => {
   });
 });
 
+const getCommentsForIndividualPost = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await CommentServices.getCommentsForIndividualPost(id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Comments retrieved Successfully!",
+    data: result,
+  });
+});
+
 export const CommentControllers = {
   createComment,
+  getCommentsForIndividualPost,
 };

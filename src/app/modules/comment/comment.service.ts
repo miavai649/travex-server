@@ -18,6 +18,12 @@ const createCommentIntoDb = async (payload: TComment, user: JwtPayload) => {
   return result;
 };
 
+const getCommentsForIndividualPost = async (postId: string) => {
+  const result = await Comment.find({ post: postId }).populate("commenter");
+  return result;
+};
+
 export const CommentServices = {
   createCommentIntoDb,
+  getCommentsForIndividualPost,
 };
