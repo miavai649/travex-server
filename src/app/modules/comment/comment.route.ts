@@ -13,6 +13,11 @@ router.post(
   validateRequest(CommentValidations.createCommentValidationSchema),
   CommentControllers.createComment,
 );
-
 router.get("/:id", CommentControllers.getCommentsForIndividualPost);
+router.put(
+  "/:id",
+  auth(USER_ROLE.USER),
+  validateRequest(CommentValidations.updateCommentValidationSchema),
+  CommentControllers.updateMyComment,
+);
 export const CommentRoutes = router;

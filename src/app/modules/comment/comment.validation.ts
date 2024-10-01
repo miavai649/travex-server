@@ -7,6 +7,13 @@ const createCommentValidationSchema = z.object({
   }),
 });
 
+const updateCommentValidationSchema = z.object({
+  body: z.object({
+    comment: z.string().min(1, { message: "Comment cannot be empty" }),
+  }),
+});
+
 export const CommentValidations = {
   createCommentValidationSchema,
+  updateCommentValidationSchema,
 };

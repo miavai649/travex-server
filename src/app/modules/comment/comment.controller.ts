@@ -26,7 +26,20 @@ const getCommentsForIndividualPost = catchAsync(async (req, res) => {
   });
 });
 
+const updateMyComment = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await CommentServices.updateMyComment(id, req.body, req.user);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Comment updated Successfully!",
+    data: result,
+  });
+});
+
 export const CommentControllers = {
   createComment,
   getCommentsForIndividualPost,
+  updateMyComment,
 };

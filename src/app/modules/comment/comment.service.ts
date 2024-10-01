@@ -23,7 +23,32 @@ const getCommentsForIndividualPost = async (postId: string) => {
   return result;
 };
 
+const updateMyComment = async (
+  id: string,
+  payload: TComment,
+  user: JwtPayload,
+) => {
+  const comment = await Comment.findById(id);
+
+  if (!comment) {
+    throw new AppError(httpStatus.NOT_FOUND, "Comment not found!");
+  }
+
+  if (comment.commenter.toString() !== user._id.toString()) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "You are not authorized to update this comment!",
+    );
+  }
+
+  const result = await Comment.findByIdAndUpdate(id, payload, {
+    new: true,
+  });
+  return result;
+};
+
 export const CommentServices = {
   createCommentIntoDb,
   getCommentsForIndividualPost,
+  updateMyComment,
 };
