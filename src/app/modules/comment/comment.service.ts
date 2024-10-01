@@ -47,8 +47,27 @@ const updateMyComment = async (
   return result;
 };
 
+const deleteMyComment = async (id: string, user: JwtPayload) => {
+  const comment = await Comment.findById(id);
+
+  if (!comment) {
+    throw new AppError(httpStatus.NOT_FOUND, "Comment not found!");
+  }
+
+  if (comment.commenter.toString() !== user._id.toString()) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "You are not authorized to delete this comment!",
+    );
+  }
+
+  const result = await Comment.findByIdAndDelete(id);
+  return result;
+};
+
 export const CommentServices = {
   createCommentIntoDb,
   getCommentsForIndividualPost,
   updateMyComment,
+  deleteMyComment,
 };

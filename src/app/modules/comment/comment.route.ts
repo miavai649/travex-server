@@ -20,4 +20,5 @@ router.put(
   validateRequest(CommentValidations.updateCommentValidationSchema),
   CommentControllers.updateMyComment,
 );
+router.delete("/:id", auth(USER_ROLE.USER), CommentControllers.deleteMyComment);
 export const CommentRoutes = router;
