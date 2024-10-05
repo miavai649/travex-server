@@ -1,13 +1,16 @@
-import { ObjectId } from "mongoose";
-import { POST_CATEGORY } from "./post.constant";
+import { ObjectId } from 'mongoose'
+import { POST_CATEGORY } from './post.constant'
 
 export type TPost = {
-  _id?: string;
-  title: string;
-  content: string;
-  author: ObjectId;
-  images?: string[];
-  category: keyof typeof POST_CATEGORY;
-  isPremium: boolean;
-  isDelete: boolean;
-};
+  _id?: string
+  title: string
+  location: string
+  content: string
+  author: ObjectId
+  images?: string[]
+  category: keyof typeof POST_CATEGORY
+  upvote: number
+  downvote: number
+  isPremium: boolean
+  isDelete: boolean
+}
