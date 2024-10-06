@@ -51,9 +51,25 @@ const getCurrentUser = catchAsync(async (req, res) => {
   });
 });
 
+const toggleFollowUser = catchAsync(async (req, res) => {
+  const { email } = req.user;
+
+  const { followingId } = req.body;
+
+  const result = await UserServices.toggleFollowUser(email, followingId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User following and follower updated successfully!",
+    data: result,
+  });
+});
+
 export const UserControllers = {
   createUser,
   getAllUsers,
   getCurrentUser,
   updateUser,
+  toggleFollowUser,
 };

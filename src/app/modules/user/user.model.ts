@@ -1,10 +1,10 @@
-import { Schema, model, Types } from "mongoose";
+import mongoose, { Schema, model, Types } from "mongoose";
 import { IUserModel, TUser } from "./user.interface";
 import { GENDER, USER_ROLE, USER_STATUS } from "./user.constant";
 import bcryptjs from "bcryptjs";
 import config from "../../config";
 
-const userSchema = new Schema<TUser, IUserModel>(
+const userSchema = new Schema<TUser>(
   {
     name: {
       type: String,
@@ -64,13 +64,13 @@ const userSchema = new Schema<TUser, IUserModel>(
     },
     followers: [
       {
-        type: Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
     ],
     following: [
       {
-        type: Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
     ],

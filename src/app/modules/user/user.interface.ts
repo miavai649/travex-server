@@ -1,4 +1,4 @@
-import { Model, ObjectId } from "mongoose";
+import mongoose, { Model } from "mongoose";
 import { GENDER, USER_ROLE, USER_STATUS } from "./user.constant";
 
 export type TUser = {
@@ -16,8 +16,8 @@ export type TUser = {
   birthDate: string;
   bio?: string;
   address?: string;
-  followers?: ObjectId[];
-  following?: ObjectId[];
+  followers?: mongoose.Types.ObjectId[];
+  following?: mongoose.Types.ObjectId[];
 };
 
 export interface IUserModel extends Model<TUser> {

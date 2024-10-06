@@ -20,6 +20,11 @@ router.get(
   UserControllers.getCurrentUser,
 );
 router.put(
+  "/toggle-follower",
+  auth(USER_ROLE.USER, USER_ROLE.ADMIN),
+  UserControllers.toggleFollowUser,
+);
+router.put(
   "/update-user/:id",
   auth(USER_ROLE.USER),
   UserControllers.updateUser,
