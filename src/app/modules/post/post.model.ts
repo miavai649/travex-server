@@ -1,61 +1,65 @@
-import { model, Schema, Types } from "mongoose";
-import { TPost } from "./post.interface";
-import { POST_CATEGORY } from "./post.constant";
+import mongoose, { model, Schema, Types } from 'mongoose'
+import { TPost } from './post.interface'
+import { POST_CATEGORY } from './post.constant'
 
 const postSchema = new Schema<TPost>(
   {
     title: {
       type: String,
       required: true,
-      trim: true,
+      trim: true
     },
     location: {
       type: String,
       required: true,
-      trim: true,
+      trim: true
     },
     content: {
       type: String,
-      required: true,
+      required: true
     },
     author: {
       type: Types.ObjectId,
-      ref: "User",
-      required: true,
+      ref: 'User',
+      required: true
     },
     images: {
       type: [String],
-      default: [],
+      default: []
     },
     category: {
       type: String,
       enum: Object.values(POST_CATEGORY),
-      required: true,
+      required: true
     },
-    upvote: {
-      type: Number,
-      default: 0,
-    },
-    downvote: {
-      type: Number,
-      default: 0,
-    },
+    upvote: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      }
+    ],
+    downvote: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      }
+    ],
     commentCount: {
       type: Number,
-      default: 0,
+      default: 0
     },
     isPremium: {
       type: Boolean,
-      default: false,
+      default: false
     },
     isDelete: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   {
-    timestamps: true,
-  },
-);
+    timestamps: true
+  }
+)
 
-export const Post = model<TPost>("Post", postSchema);
+export const Post = model<TPost>('Post', postSchema)
