@@ -4,6 +4,7 @@ import { Post } from "../post/post.model";
 import AppError from "../../errors/AppError";
 import httpStatus from "http-status";
 import { Comment } from "./comment.model";
+import mongoose from "mongoose";
 
 const createCommentIntoDb = async (payload: TComment, user: JwtPayload) => {
   const post = await Post.findById(payload.post);
@@ -14,12 +15,26 @@ const createCommentIntoDb = async (payload: TComment, user: JwtPayload) => {
 
   payload.commenter = user._id;
 
-  const result = await Comment.create(payload);
-  return result;
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+    const result = await Comment.create(payload);
+
+    await Post.findByIdAndUpdate(payload.post, { $inc: { commentCount: 1 } });
+
+    return result;
+  } catch (error: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(error);
+  }
 };
 
 const getCommentsForIndividualPost = async (postId: string) => {
-  const result = await Comment.find({ post: postId }).populate("commenter");
+  const result = await Comment.find({ post: postId })
+    .sort("-createdAt")
+    .populate("commenter");
   return result;
 };
 
