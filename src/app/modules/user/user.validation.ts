@@ -30,9 +30,9 @@ export const userUpdateSchema = z.object({
     gender: z.enum(Object.keys(GENDER) as [keyof typeof GENDER]).optional(),
     profileImage: z
       .string()
-      .url()
+      .url({ message: "Invalid profile image URL" })
       .optional()
-      .default("https://i.ibb.co.com/vkVW6s0/download.png"),
+      .default("https://i.ibb.co/vkVW6s0/download.png"),
     bio: z.string().optional(),
     birthDate: z
       .string()
@@ -40,8 +40,8 @@ export const userUpdateSchema = z.object({
       .optional(),
     mobileNumber: z
       .string()
-      .min(10, { message: "Mobile number is required" })
+      .min(10, { message: "Mobile number must be at least 10 digits" })
       .optional(),
-    address: z.string().min(1, { message: "Address is required" }).optional(),
+    address: z.string().optional(),
   }),
 });

@@ -1,34 +1,45 @@
-import express from 'express'
-import { UserControllers } from './user.controller'
-import validateRequest from '../../middleware/validateRequest'
-import { userRegisterSchema } from './user.validation'
-import auth from '../../middleware/auth'
-import { USER_ROLE } from './user.constant'
+import express, { NextFunction, Request, Response } from "express";
+import { UserControllers } from "./user.controller";
+import validateRequest from "../../middleware/validateRequest";
+import { userRegisterSchema, userUpdateSchema } from "./user.validation";
+import auth from "../../middleware/auth";
+import { USER_ROLE } from "./user.constant";
+import { multerUpload } from "../../config/multer.config";
 
-const router = express.Router()
+const router = express.Router();
 
 router.post(
-  '/create-user',
+  "/create-user",
   validateRequest(userRegisterSchema),
-  UserControllers.createUser
-)
-router.get('/', UserControllers.getAllUsers)
+  UserControllers.createUser,
+);
+router.get("/", UserControllers.getAllUsers);
 
 router.get(
-  '/current-user',
+  "/current-user",
   auth(USER_ROLE.USER, USER_ROLE.ADMIN),
-  UserControllers.getCurrentUser
-)
+  UserControllers.getCurrentUser,
+);
 router.put(
-  '/toggle-follower',
+  "/toggle-follower",
   auth(USER_ROLE.USER, USER_ROLE.ADMIN),
-  UserControllers.toggleFollowUser
-)
+  UserControllers.toggleFollowUser,
+);
 router.put(
-  '/toggle-bookmark',
+  "/toggle-bookmark",
   auth(USER_ROLE.USER, USER_ROLE.ADMIN),
-  UserControllers.bookmarkPost
-)
-router.put('/update-user/:id', auth(USER_ROLE.USER), UserControllers.updateUser)
+  UserControllers.bookmarkPost,
+);
+router.put(
+  "/update-user",
+  auth(USER_ROLE.USER, USER_ROLE.ADMIN),
+  multerUpload.single("profileImage"),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.userData);
+    next();
+  },
+  validateRequest(userUpdateSchema),
+  UserControllers.updateUser,
+);
 
-export const UserRoutes = router
+export const UserRoutes = router;

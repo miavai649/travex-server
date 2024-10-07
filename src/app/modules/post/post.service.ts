@@ -1,118 +1,118 @@
-import httpStatus from 'http-status'
-import { QueryBuilder } from '../../builder/QueryBuilder'
-import AppError from '../../errors/AppError'
-import { TImageFiles } from '../../interfaces/file.interface'
-import { PostsSearchableFields } from './post.constant'
-import { TPost } from './post.interface'
-import { Post } from './post.model'
-import { User } from '../user/user.model'
-import mongoose from 'mongoose'
+import httpStatus from "http-status";
+import { QueryBuilder } from "../../builder/QueryBuilder";
+import AppError from "../../errors/AppError";
+import { TImageFiles } from "../../interfaces/file.interface";
+import { PostsSearchableFields } from "./post.constant";
+import { TPost } from "./post.interface";
+import { Post } from "./post.model";
+import { User } from "../user/user.model";
+import mongoose from "mongoose";
 
 const createPostIntoDb = async (payload: TPost, images: TImageFiles) => {
-  payload.images = images.postImages?.map((image) => image?.path)
+  payload.images = images.postImages?.map((image) => image?.path);
 
-  const post = await Post.create(payload)
-  return post
-}
+  const post = await Post.create(payload);
+  return post;
+};
 
 const getAllPostsFromDb = async (query: Record<string, unknown>) => {
   const users = new QueryBuilder(
-    Post.find({ isDelete: false }).populate('author'),
-    query
+    Post.find({ isDelete: false }).populate("author"),
+    query,
   )
     .fields()
     .paginate()
     .sort()
     .filter()
-    .search(PostsSearchableFields)
+    .search(PostsSearchableFields);
 
-  const result = await users.modelQuery
+  const result = await users.modelQuery;
 
-  return result
-}
+  return result;
+};
 
 const getPostByFromDB = async (postId: string) => {
-  const result = await Post.findById(postId).populate('author')
-  return result
-}
+  const result = await Post.findById(postId).populate("author");
+  return result;
+};
 
 const updatePostIntoDB = async (
   postId: string,
   payload: TPost,
-  images: TImageFiles
+  images: TImageFiles,
 ) => {
   if (images.postImages?.length > 0) {
-    payload.images = images.postImages.map((image) => image.path)
+    payload.images = images.postImages.map((image) => image.path);
   }
 
-  const result = await Post.findByIdAndUpdate(postId, payload, { new: true })
-  return result
-}
+  const result = await Post.findByIdAndUpdate(postId, payload, { new: true });
+  return result;
+};
 
 const deletePostIntoDb = async (postId: string) => {
-  const isPostExists = await Post.findById(postId)
+  const isPostExists = await Post.findById(postId);
 
   // check if the post is exist or not
   if (!isPostExists) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Post not found')
+    throw new AppError(httpStatus.NOT_FOUND, "Post not found");
   }
 
   const result = await Post.findByIdAndUpdate(
     postId,
     { isDelete: true },
-    { new: true }
-  )
-  return result
-}
+    { new: true },
+  );
+  return result;
+};
 
 const votePostIntoDB = async (
   postId: string,
-  action: 'upvote' | 'downvote',
-  voterEmail: string
+  action: "upvote" | "downvote",
+  voterEmail: string,
 ) => {
-  const voter = await User.isUserExistsByEmail(voterEmail)
+  const voter = await User.isUserExistsByEmail(voterEmail);
   if (!voter) {
-    throw new AppError(httpStatus.NOT_FOUND, 'User not found!')
+    throw new AppError(httpStatus.NOT_FOUND, "User not found!");
   }
 
-  if (voter?.status === 'BLOCKED') {
-    throw new AppError(httpStatus.NOT_FOUND, 'User Blocked!')
+  if (voter?.status === "BLOCKED") {
+    throw new AppError(httpStatus.NOT_FOUND, "User Blocked!");
   }
 
-  const post = await Post.findById(postId)
+  const post = await Post.findById(postId);
 
   if (!post) {
-    throw new AppError(httpStatus.NOT_FOUND, 'No post found!')
+    throw new AppError(httpStatus.NOT_FOUND, "No post found!");
   }
 
   if (post.isDelete) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Post has been deleted')
+    throw new AppError(httpStatus.NOT_FOUND, "Post has been deleted");
   }
 
-  const updateOperations: any = {}
+  const updateOperations: any = {};
 
-  if (action === 'upvote') {
+  if (action === "upvote") {
     if (post?.upvote?.includes(new mongoose.Types.ObjectId(voter?._id))) {
-      updateOperations.$pull = { upvote: voter._id }
+      updateOperations.$pull = { upvote: voter._id };
     } else {
-      updateOperations.$addToSet = { upvote: voter._id }
-      updateOperations.$pull = { downvote: voter._id }
+      updateOperations.$addToSet = { upvote: voter._id };
+      updateOperations.$pull = { downvote: voter._id };
     }
-  } else if (action === 'downvote') {
+  } else if (action === "downvote") {
     if (post?.downvote?.includes(new mongoose.Types.ObjectId(voter?._id))) {
-      updateOperations.$pull = { downvote: voter._id }
+      updateOperations.$pull = { downvote: voter._id };
     } else {
-      updateOperations.$addToSet = { downvote: voter._id }
-      updateOperations.$pull = { upvote: voter._id }
+      updateOperations.$addToSet = { downvote: voter._id };
+      updateOperations.$pull = { upvote: voter._id };
     }
   }
 
   const updatedPost = await Post.findByIdAndUpdate(postId, updateOperations, {
-    new: true
-  })
+    new: true,
+  });
 
-  return updatedPost
-}
+  return updatedPost;
+};
 
 export const PostServices = {
   createPostIntoDb,
@@ -120,5 +120,5 @@ export const PostServices = {
   getPostByFromDB,
   updatePostIntoDB,
   deletePostIntoDb,
-  votePostIntoDB
-}
+  votePostIntoDB,
+};
