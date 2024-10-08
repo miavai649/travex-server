@@ -72,7 +72,7 @@ const toggleFollowUser = catchAsync(async (req, res) => {
 });
 
 const bookmarkPost = catchAsync(async (req, res) => {
-  const user = await UserServices.bookmarkPost(req.body.id, req.user?.email);
+  const user = await UserServices.bookmarkPost(req.body.id, req?.user?._id);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

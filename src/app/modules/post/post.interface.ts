@@ -5,7 +5,8 @@ export type TPost = {
   _id?: string;
   title: string;
   location: string;
-  content: string;
+  description: string;
+  content?: string;
   author: ObjectId;
   images?: string[];
   category: keyof typeof POST_CATEGORY;

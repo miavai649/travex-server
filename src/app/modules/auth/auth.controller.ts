@@ -9,8 +9,9 @@ const registerUser = catchAsync(async (req, res) => {
   const { refreshToken, accessToken } = result;
 
   res.cookie("refreshToken", refreshToken, {
-    secure: config.NODE_ENV === "production",
+    secure: config.NODE_ENV === "production" ? true : false,
     httpOnly: true,
+    sameSite: config.NODE_ENV === "production" ? "none" : "lax",
   });
 
   sendResponse(res, {
@@ -29,8 +30,9 @@ const loginUser = catchAsync(async (req, res) => {
   const { refreshToken, accessToken } = result;
 
   res.cookie("refreshToken", refreshToken, {
-    secure: config.NODE_ENV === "production",
+    secure: config.NODE_ENV === "production" ? true : false,
     httpOnly: true,
+    sameSite: config.NODE_ENV === "production" ? "none" : "lax",
   });
 
   sendResponse(res, {

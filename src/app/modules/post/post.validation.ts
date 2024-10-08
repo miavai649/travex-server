@@ -5,6 +5,10 @@ const createPostValidationSchema = z.object({
   body: z.object({
     title: z.string().min(1, { message: "Title is required" }),
     location: z.string().min(1, { message: "Location is required" }),
+    description: z
+      .string()
+      .min(1, { message: "Description is required" })
+      .optional(),
     content: z.string().min(1, { message: "Content is required" }),
     author: z.string().min(1, { message: "Author ID is required" }),
     images: z.array(z.string()).optional(),
@@ -20,6 +24,10 @@ const updatePostValidationSchema = z.object({
   body: z.object({
     title: z.string().min(1, { message: "Title is required" }).optional(),
     location: z.string().min(1, { message: "Location is required" }).optional(),
+    description: z
+      .string()
+      .min(1, { message: "Description is required" })
+      .optional(),
     content: z.string().min(1, { message: "Content is required" }).optional(),
     images: z.array(z.string()).optional(),
     category: z

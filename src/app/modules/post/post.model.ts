@@ -16,6 +16,9 @@ const postSchema = new Schema<TPost>(
     },
     content: {
       type: String,
+    },
+    description: {
+      type: String,
       required: true,
     },
     author: {
