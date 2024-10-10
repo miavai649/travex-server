@@ -20,4 +20,6 @@ export default {
   frontend_url: process.env.FRONTEND_URL,
   backend_url: process.env.BACKEND_URL,
   verify_url: process.env.VERIFY_URL,
+  user_email: process.env.USER_EMAIL,
+  user_pass: process.env.USER_PASS,
 };

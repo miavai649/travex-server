@@ -17,8 +17,8 @@ router.post(
   validateRequest(PostValidations.createPostValidationSchema),
   PostControllers.createPost,
 );
-router.get("/", PostControllers.getAllPosts);
-router.get("/:id", PostControllers.getPostById);
+router.get("/get-all", PostControllers.getAllPosts);
+router.get("/get-single/:id", PostControllers.getPostById);
 router.put(
   "/:id",
   auth(USER_ROLE.USER),
@@ -35,6 +35,12 @@ router.put(
   "/voting/:id",
   auth(USER_ROLE.USER, USER_ROLE.ADMIN),
   PostControllers.votePost,
+);
+
+router.get(
+  "/get-current-user-post",
+  auth(USER_ROLE.USER, USER_ROLE.ADMIN),
+  PostControllers.getCurrentUserPost,
 );
 
 export const PostRoutes = router;

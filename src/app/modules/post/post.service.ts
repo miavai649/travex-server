@@ -114,6 +114,12 @@ const votePostIntoDB = async (
   return updatedPost;
 };
 
+const getCurrentUserPost = async (userId: string) => {
+  const objectId = new mongoose.Types.ObjectId(userId);
+  const result = await Post.find({ author: objectId }).populate("author");
+  return result;
+};
+
 export const PostServices = {
   createPostIntoDb,
   getAllPostsFromDb,
@@ -121,4 +127,5 @@ export const PostServices = {
   updatePostIntoDB,
   deletePostIntoDb,
   votePostIntoDB,
+  getCurrentUserPost,
 };

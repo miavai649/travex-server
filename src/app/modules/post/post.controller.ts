@@ -88,6 +88,17 @@ const votePost = catchAsync(async (req, res) => {
   });
 });
 
+const getCurrentUserPost = catchAsync(async (req, res) => {
+  const result = await PostServices.getCurrentUserPost(req?.user?._id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Current user post retrieved successfully",
+    data: result,
+  });
+});
+
 export const PostControllers = {
   createPost,
   getAllPosts,
@@ -95,4 +106,5 @@ export const PostControllers = {
   updatePost,
   deletePost,
   votePost,
+  getCurrentUserPost,
 };
