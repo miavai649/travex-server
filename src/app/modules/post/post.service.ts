@@ -116,7 +116,10 @@ const votePostIntoDB = async (
 
 const getCurrentUserPost = async (userId: string) => {
   const objectId = new mongoose.Types.ObjectId(userId);
-  const result = await Post.find({ author: objectId }).populate("author");
+  const result = await Post.find({
+    author: objectId,
+    isDelete: false,
+  }).populate("author");
   return result;
 };
 

@@ -27,6 +27,16 @@ const getAllUsersFromDb = async (query: Record<string, unknown>) => {
   return result;
 };
 
+const getSingleUserFromDB = async (userId: string) => {
+  const user = await User.findById(userId).select("-password");
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  return user;
+};
+
 const updateUserIntoDb = async (
   email: string,
   payload: Partial<TUser>,
@@ -61,9 +71,16 @@ const updateUserIntoDb = async (
 const getCurrentUser = async (userEmail: string, userRole: string) => {
   const result = await User.findOne({ email: userEmail, role: userRole })
     .select("-password")
-    .populate("bookmarkPosts")
+    .populate({
+      path: "bookmarkPosts",
+      populate: {
+        path: "author",
+        select: "-password",
+      },
+    })
     .populate("following")
     .populate("followers");
+
   return result;
 };
 
@@ -142,4 +159,5 @@ export const UserServices = {
   updateUserIntoDb,
   toggleFollowUser,
   bookmarkPost,
+  getSingleUserFromDB,
 };

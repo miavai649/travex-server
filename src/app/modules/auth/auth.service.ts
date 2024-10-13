@@ -201,7 +201,7 @@ const forgetPassword = async (email: string) => {
 </div>
 `;
 
-  sendEmail(user?.email as string, emailHTML);
+  await sendEmail(user?.email as string, emailHTML);
 };
 
 const resetPassword = async (

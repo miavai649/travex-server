@@ -26,6 +26,17 @@ const getAllUsers = catchAsync(async (req, res) => {
   });
 });
 
+const getSingleUser = catchAsync(async (req, res) => {
+  const user = await UserServices.getSingleUserFromDB(req.params.id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "User Retrieved Successfully",
+    data: user,
+  });
+});
+
 const updateUser = catchAsync(async (req, res) => {
   const { email } = req.user;
 
@@ -89,4 +100,5 @@ export const UserControllers = {
   updateUser,
   toggleFollowUser,
   bookmarkPost,
+  getSingleUser,
 };

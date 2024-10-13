@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.post(
   "/create-post",
-  auth(USER_ROLE.USER),
+  auth(USER_ROLE.USER, USER_ROLE.ADMIN),
   multerUpload.fields([{ name: "postImages" }]),
   bodyDataParsing,
   validateRequest(PostValidations.createPostValidationSchema),
@@ -21,7 +21,7 @@ router.get("/get-all", PostControllers.getAllPosts);
 router.get("/get-single/:id", PostControllers.getPostById);
 router.put(
   "/:id",
-  auth(USER_ROLE.USER),
+  auth(USER_ROLE.USER, USER_ROLE.ADMIN),
   multerUpload.fields([{ name: "postImages" }]),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.postData);

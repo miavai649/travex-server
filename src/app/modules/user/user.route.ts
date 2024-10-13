@@ -42,4 +42,10 @@ router.put(
   UserControllers.updateUser,
 );
 
+router.get(
+  "/get-single-user/:id",
+  auth(USER_ROLE.USER, USER_ROLE.ADMIN),
+  UserControllers.getSingleUser,
+);
+
 export const UserRoutes = router;

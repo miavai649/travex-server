@@ -9,16 +9,20 @@ const router = express.Router();
 
 router.post(
   "/create-comment",
-  auth(USER_ROLE.USER),
+  auth(USER_ROLE.USER, USER_ROLE.ADMIN),
   validateRequest(CommentValidations.createCommentValidationSchema),
   CommentControllers.createComment,
 );
 router.get("/:id", CommentControllers.getCommentsForIndividualPost);
 router.put(
   "/:id",
-  auth(USER_ROLE.USER),
+  auth(USER_ROLE.USER, USER_ROLE.ADMIN),
   validateRequest(CommentValidations.updateCommentValidationSchema),
   CommentControllers.updateMyComment,
 );
-router.delete("/:id", auth(USER_ROLE.USER), CommentControllers.deleteMyComment);
+router.delete(
+  "/:id",
+  auth(USER_ROLE.USER, USER_ROLE.ADMIN),
+  CommentControllers.deleteMyComment,
+);
 export const CommentRoutes = router;
