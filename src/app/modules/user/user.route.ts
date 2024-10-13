@@ -48,4 +48,9 @@ router.get(
   UserControllers.getSingleUser,
 );
 
+router.put(
+  "/status-toggle/:id",
+  auth(USER_ROLE.ADMIN),
+  UserControllers.toggleStatus,
+);
 export const UserRoutes = router;

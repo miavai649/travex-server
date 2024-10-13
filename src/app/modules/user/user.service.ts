@@ -15,7 +15,7 @@ const createUserIntoDb = async (payload: TUser) => {
 };
 
 const getAllUsersFromDb = async (query: Record<string, unknown>) => {
-  const users = new QueryBuilder(User.find(), query)
+  const users = new QueryBuilder(User.find({ status: "ACTIVE" }), query)
     .fields()
     .paginate()
     .sort()
@@ -152,6 +152,22 @@ const bookmarkPost = async (id: string, userOwnId: string) => {
   }
 };
 
+const statusToggleFromDB = async (id: string) => {
+  const findUser = await User.findById(id);
+
+  if (!findUser) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  const checkStatusOfUser = findUser.status;
+
+  if (checkStatusOfUser === "ACTIVE") {
+    await User.findByIdAndUpdate({ _id: id }, { status: "BLOCKED" });
+  } else {
+    await User.findByIdAndUpdate({ _id: id }, { status: "ACTIVE" });
+  }
+};
+
 export const UserServices = {
   createUserIntoDb,
   getAllUsersFromDb,
@@ -160,4 +176,5 @@ export const UserServices = {
   toggleFollowUser,
   bookmarkPost,
   getSingleUserFromDB,
+  statusToggleFromDB,
 };

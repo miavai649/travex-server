@@ -17,7 +17,10 @@ const createPostIntoDb = async (payload: TPost, images: TImageFiles) => {
 
 const getAllPostsFromDb = async (query: Record<string, unknown>) => {
   const users = new QueryBuilder(
-    Post.find({ isDelete: false }).populate("author"),
+    Post.find({ isDelete: false }).populate({
+      path: "author",
+      match: { status: "ACTIVE" },
+    }),
     query,
   )
     .fields()
@@ -28,7 +31,9 @@ const getAllPostsFromDb = async (query: Record<string, unknown>) => {
 
   const result = await users.modelQuery;
 
-  return result;
+  const filteredPosts = result.filter((post) => post.author !== null);
+
+  return filteredPosts;
 };
 
 const getPostByFromDB = async (postId: string) => {

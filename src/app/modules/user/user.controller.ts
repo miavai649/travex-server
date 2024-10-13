@@ -93,6 +93,17 @@ const bookmarkPost = catchAsync(async (req, res) => {
   });
 });
 
+const toggleStatus = catchAsync(async (req, res) => {
+  const user = await UserServices.statusToggleFromDB(req.params.id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Status Updated",
+    data: user,
+  });
+});
+
 export const UserControllers = {
   createUser,
   getAllUsers,
@@ -101,4 +112,5 @@ export const UserControllers = {
   toggleFollowUser,
   bookmarkPost,
   getSingleUser,
+  toggleStatus,
 };
