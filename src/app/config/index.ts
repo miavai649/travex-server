@@ -22,4 +22,5 @@ export default {
   verify_url: process.env.VERIFY_URL,
   user_email: process.env.USER_EMAIL,
   user_pass: process.env.USER_PASS,
+  nodemailer_host: process.env.NODEMAILER_HOST,
 };

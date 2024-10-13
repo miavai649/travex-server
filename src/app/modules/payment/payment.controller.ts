@@ -24,7 +24,19 @@ const confirmationController = catchAsync(async (req, res) => {
   res.send(result);
 });
 
+const getAllPayments = catchAsync(async (req, res) => {
+  const payments = await PaymentServices.getAllPaymentsFromDB();
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Payments fetched successfully",
+    data: payments,
+  });
+});
+
 export const PaymentController = {
   createPayment,
   confirmationController,
+  getAllPayments,
 };
