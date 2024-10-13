@@ -15,7 +15,7 @@ const createUserIntoDb = async (payload: TUser) => {
 };
 
 const getAllUsersFromDb = async (query: Record<string, unknown>) => {
-  const users = new QueryBuilder(User.find({ status: "ACTIVE" }), query)
+  const users = new QueryBuilder(User.find(), query)
     .fields()
     .paginate()
     .sort()
