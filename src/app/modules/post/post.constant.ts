@@ -9,4 +9,9 @@ export const POST_CATEGORY = {
   RoadTrips: "Road Trips",
 } as const;
 
-export const PostsSearchableFields = ["title", "content", "images"];
+export const PostsSearchableFields = [
+  "title",
+  "content",
+  "images",
+  "description",
+];
